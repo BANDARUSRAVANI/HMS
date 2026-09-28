@@ -7,16 +7,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// ==========================
-/// User Model
-/// ==========================
-model User {
-  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
-  name                  String?
-  email                 String                 @unique
-  password              String
-  role                  String                 @default("user")
-  createdAt             DateTime               @default(now())
-
+enum UserRole {
+  DOCTOR
+  NURSE
+  BILLING
+  USER
 }
 
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+}
+
+model Patient {
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  firstName     String
+  lastName      String
+  dateOfBirth   DateTime
+  admissionDate DateTime         @default(now())
+  medicalNotes  MedicalRecord[]
+  claims        InsuranceClaim[]
+}
+
+model MedicalRecord {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String   @db.ObjectId
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorNotes String
+  diagnosis   String
+  createdAt   DateTime @default(now())
+}
+
+enum ClaimStatus {
+  CLAIM_APPROVED
+  CLAIM_DENIED
+  CLAIM_PENDING
+}
+
+model InsuranceClaim {
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  patientId   String      @db.ObjectId
+  patient     Patient     @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  billAmount  Float
+  status      ClaimStatus @default(CLAIM_PENDING)
+  submittedAt DateTime     @default(now())
+}
