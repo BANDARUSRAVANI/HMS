@@ -9,6 +9,9 @@ const authRoutes = require("./routes/authRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const medicalRecordRoutes = require("./routes/medicalRecordRoutes");
 const insuranceClaimRoutes = require("./routes/insuranceClaimRoutes");
+const {ConnectDB} = require("./utils/dbConnector.js");
+
+ConnectDB();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/patients", patientRoutes);

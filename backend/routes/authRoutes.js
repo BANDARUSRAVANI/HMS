@@ -8,7 +8,7 @@ const {
     getMe
 } = require("../controllers/authController");
 
-const authMiddleware = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware.js");
 
 router.post("/register", register);
 
